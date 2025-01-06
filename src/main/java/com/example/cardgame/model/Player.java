@@ -1,15 +1,19 @@
 package com.example.cardgame.model;
 
 import com.example.cardgame.generator.UUIDGenerator;
+import com.example.cardgame.model.card.ActionCard;
+import com.example.cardgame.model.card.Card;
+import com.example.cardgame.model.card.MoodCard;
+import com.example.cardgame.model.card.RoleCard;
 
 import java.util.List;
 
 public class Player {
     private String playerId = UUIDGenerator.getNew();
     private String login;
-    private Card roleCard;
-    private Card moodCard;
-    private List<Card> actionCards;
+    private RoleCard roleCard;
+    private MoodCard moodCard;
+    private List<ActionCard> actionCards;
 
     public Player() {
 
@@ -41,27 +45,27 @@ public class Player {
         this.login = login;
     }
 
-    public Card getRoleCard() {
+    public RoleCard getRoleCard() {
         return roleCard;
     }
 
-    public void setRoleCard(Card roleCard) {
+    public void setRoleCard(RoleCard roleCard) {
         this.roleCard = roleCard;
     }
 
-    public Card getMoodCard() {
+    public MoodCard getMoodCard() {
         return moodCard;
     }
 
-    public void setMoodCard(Card moodCard) {
+    public void setMoodCard(MoodCard moodCard) {
         this.moodCard = moodCard;
     }
 
-    public List<Card> getActionCards() {
+    public List<ActionCard> getActionCards() {
         return actionCards;
     }
 
-    public void setActionCards(List<Card> actionCards) {
+    public void setActionCards(List<ActionCard> actionCards) {
         this.actionCards = actionCards;
     }
 }

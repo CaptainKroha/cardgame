@@ -1,4 +1,4 @@
-package com.example.cardgame.controller;
+package com.example.cardgame.model;
 
 import java.util.List;
 

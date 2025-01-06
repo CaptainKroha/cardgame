@@ -1,25 +1,25 @@
 package com.example.cardgame.model;
 
-import com.example.cardgame.generator.UUIDGenerator;
+import com.example.cardgame.model.card.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 @Document(collection = "rooms")
 public class Room {
     @Id
-    private String roomId = UUIDGenerator.getNew();
-    private String simpleRoomId;
+    private String roomId;
     private String creatorId;
     private Integer cardsPerPlayer;
-    private Card situationCard;
-    private List<Player> players;
-    private List<Card> situationCards;
-    private List<Card> roleCards;
-    private List<Card> moodCards;
-    private List<Card> actionCards;
+    private SituationCard situationCard;
+    private List<Player> players = new ArrayList<>();
+    private List<SituationCard> situationCards;
+    private List<RoleCard> roleCards;
+    private List<MoodCard> moodCards;
+    private List<ActionCard> actionCards;
     private Date createdAt = new Date();
     private Boolean isGameStarted = false;
 
@@ -39,14 +39,6 @@ public class Room {
         this.roomId = roomId;
     }
 
-    public String getSimpleRoomId() {
-        return simpleRoomId;
-    }
-
-    public void setSimpleRoomId(String simpleRoomId) {
-        this.simpleRoomId = simpleRoomId;
-    }
-
     public Integer getCardsPerPlayer() {
         return cardsPerPlayer;
     }
@@ -63,11 +55,11 @@ public class Room {
         this.creatorId = creatorId;
     }
 
-    public Card getSituationCard() {
+    public SituationCard getSituationCard() {
         return situationCard;
     }
 
-    public void setSituationCard(Card situationCard) {
+    public void setSituationCard(SituationCard situationCard) {
         this.situationCard = situationCard;
     }
 
@@ -79,35 +71,35 @@ public class Room {
         this.players = players;
     }
 
-    public List<Card> getSituationCards() {
+    public List<SituationCard> getSituationCards() {
         return situationCards;
     }
 
-    public void setSituationCards(List<Card> situationCards) {
+    public void setSituationCards(List<SituationCard> situationCards) {
         this.situationCards = situationCards;
     }
 
-    public List<Card> getRoleCards() {
+    public List<RoleCard> getRoleCards() {
         return roleCards;
     }
 
-    public void setRoleCards(List<Card> roleCards) {
+    public void setRoleCards(List<RoleCard> roleCards) {
         this.roleCards = roleCards;
     }
 
-    public List<Card> getMoodCards() {
+    public List<MoodCard> getMoodCards() {
         return moodCards;
     }
 
-    public void setMoodCards(List<Card> moodCards) {
+    public void setMoodCards(List<MoodCard> moodCards) {
         this.moodCards = moodCards;
     }
 
-    public List<Card> getActionCards() {
+    public List<ActionCard> getActionCards() {
         return actionCards;
     }
 
-    public void setActionCards(List<Card> actionCards) {
+    public void setActionCards(List<ActionCard> actionCards) {
         this.actionCards = actionCards;
     }
 
