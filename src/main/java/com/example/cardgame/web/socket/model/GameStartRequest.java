@@ -1,4 +1,4 @@
-package com.example.cardgame.websocket.model;
+package com.example.cardgame.web.socket.model;
 
 public class GameStartRequest {
     private String roomId;

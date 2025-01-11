@@ -1,4 +1,4 @@
-package com.example.cardgame.service;
+package com.example.cardgame.web.rest.service;
 
 import com.example.cardgame.model.*;
 import com.example.cardgame.model.card.*;
@@ -50,28 +50,8 @@ public class RoomService {
         return roomRepository.findById(roomId);
     }
 
-    public Optional<Player> addPlayerToRoom(String roomId, String login) {
-        Optional<Room> optionalRoom = roomRepository.findById(roomId);
-        if (optionalRoom.isPresent()) {
-            Room room = optionalRoom.get();
-            Player player = new Player(login);
-            room.getPlayers().add(player);
-            roomRepository.save(room);
-            return Optional.of(player);
-        }
-        return Optional.empty();
-    }
-
-    public Optional<Player> getPlayerById(String playerId) {
-        for(Room room : roomRepository.findAll()) {
-            Optional<Player> player = room.getPlayers().stream()
-                    .filter(p -> p.getPlayerId().equals(playerId))
-                    .findFirst();
-            if(player.isPresent()){
-                return player;
-            }
-        }
-        return Optional.empty();
+    public void saveRoom(Room room) {
+        roomRepository.save(room);
     }
 
     private String generateSimpleRoomId() {

@@ -20,6 +20,7 @@ public class Room {
     private List<RoleCard> roleCards;
     private List<MoodCard> moodCards;
     private List<ActionCard> actionCards;
+    private List<ActionCard> droppedActionCards = new ArrayList<>();
     private Date createdAt = new Date();
     private Boolean isGameStarted = false;
 
@@ -101,6 +102,14 @@ public class Room {
 
     public void setActionCards(List<ActionCard> actionCards) {
         this.actionCards = actionCards;
+    }
+
+    public List<ActionCard> getDroppedActionCards() {
+        return droppedActionCards;
+    }
+
+    public void setDroppedActionCards(List<ActionCard> droppedActionCards) {
+        this.droppedActionCards = droppedActionCards;
     }
 
     public Boolean getGameStarted() {

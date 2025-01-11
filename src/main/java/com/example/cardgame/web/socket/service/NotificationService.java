@@ -1,4 +1,4 @@
-package com.example.cardgame.websocket.service;
+package com.example.cardgame.web.socket.service;
 
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;

@@ -1,7 +1,7 @@
-package com.example.cardgame.controller;
+package com.example.cardgame.web.rest.controller;
 
 import com.example.cardgame.model.*;
-import com.example.cardgame.service.RoomService;
+import com.example.cardgame.web.rest.service.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
@@ -27,18 +27,8 @@ public class RoomController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/{roomId}/players")
-    public ResponseEntity<Player> getPlayer(@RequestParam String playerId) {
-        return roomService.getPlayerById(playerId)
-                .map(player -> ResponseEntity.ok().body(player))
-                .orElseGet(() -> ResponseEntity.notFound().build());
-    }
+    @DeleteMapping("/{roomId}")
+    public void closeRoom(@PathVariable String roomId) {
 
-    @PostMapping("/{roomId}/players")
-    public ResponseEntity<Player> addPlayerToRoom(@PathVariable String roomId, @RequestBody String login) {
-        Optional<Player> player = roomService.addPlayerToRoom(roomId, login);
-        return player.map(value -> ResponseEntity.ok().body(value))
-                .orElseGet(() -> ResponseEntity.notFound().build());
     }
-
 }

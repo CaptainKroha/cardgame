@@ -1,12 +1,13 @@
-package com.example.cardgame.websocket.service;
+package com.example.cardgame.web.socket.service;
 
 import com.example.cardgame.model.card.*;
 import com.example.cardgame.model.Player;
 import com.example.cardgame.model.Room;
 import com.example.cardgame.repository.RoomRepository;
-import com.example.cardgame.websocket.exception.GameStartException;
-import com.example.cardgame.websocket.model.GameStartRequest;
-import com.example.cardgame.websocket.model.GameStartResponse;
+import com.example.cardgame.web.socket.ResponseMessages;
+import com.example.cardgame.web.socket.exception.RoomNotFoundException;
+import com.example.cardgame.web.socket.model.GameStartRequest;
+import com.example.cardgame.web.socket.model.GameStartResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,11 +21,11 @@ public class GameService {
     @Autowired
     private RoomRepository roomRepository;
 
-    public GameStartResponse startGame(GameStartRequest request) throws GameStartException {
+    public GameStartResponse startGame(GameStartRequest request) throws RoomNotFoundException {
         Optional<Room> optionalRoom = roomRepository.findById(request.getRoomId());
 
         if (optionalRoom.isEmpty()) {
-            throw new GameStartException("Room was not found");
+            throw new RoomNotFoundException();
         }
 
         Room room = optionalRoom.get();
@@ -57,7 +58,11 @@ public class GameService {
         }
 
         roomRepository.save(room);
-        return GameStartResponse.success(room);
+        return GameStartResponse.get(room);
     }
 
+    public String stopGame(String roomId) throws RoomNotFoundException {
+        roomRepository.deleteById(roomId);
+        return ResponseMessages.GAME_STOPPED;
+    }
 }
