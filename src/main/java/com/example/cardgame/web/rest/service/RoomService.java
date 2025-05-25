@@ -54,6 +54,10 @@ public class RoomService {
         roomRepository.save(room);
     }
 
+    public void deleteRoom(String roomId) {
+        roomRepository.deleteById(roomId);
+    }
+
     private String generateSimpleRoomId() {
         Random random = new Random();
         int number = random.nextInt(90000) + 10000; // Генерация случайного 5-значного числа
