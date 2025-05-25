@@ -7,6 +7,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Document(collection = "rooms")
 public class Room {
@@ -118,5 +119,11 @@ public class Room {
 
     public void setGameStarted(Boolean gameStarted) {
         isGameStarted = gameStarted;
+    }
+
+    public Optional<Player> findPlayerById(String playerId) {
+        return players.stream()
+                .filter(p -> p.getPlayerId().equals(playerId))
+                .findFirst();
     }
 }
