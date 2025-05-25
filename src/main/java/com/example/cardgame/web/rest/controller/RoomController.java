@@ -1,12 +1,11 @@
 package com.example.cardgame.web.rest.controller;
 
-import com.example.cardgame.model.*;
+import com.example.cardgame.model.CreateRoomRequest;
+import com.example.cardgame.model.Room;
 import com.example.cardgame.web.rest.service.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
-
-import java.util.Optional;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/rooms")
@@ -27,8 +26,4 @@ public class RoomController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @DeleteMapping("/{roomId}")
-    public void closeRoom(@PathVariable String roomId) {
-
-    }
 }
