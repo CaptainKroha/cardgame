@@ -13,7 +13,7 @@ public class PlayerSearchResult {
         SUCCESS
     }
 
-    public PlayerSearchResult(Status status, Player player) {
+    private PlayerSearchResult(Status status, Player player) {
         this.status = status;
         this.player = player;
     }
