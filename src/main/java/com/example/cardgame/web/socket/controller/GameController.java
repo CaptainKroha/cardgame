@@ -1,8 +1,8 @@
 package com.example.cardgame.web.socket.controller;
 
 import com.example.cardgame.web.socket.exception.RoomNotFoundException;
+import com.example.cardgame.web.socket.messages.WebSocketMessage;
 import com.example.cardgame.web.socket.model.GameStartRequest;
-import com.example.cardgame.web.socket.model.GameStartResponse;
 import com.example.cardgame.web.socket.service.GameService;
 import com.example.cardgame.web.socket.service.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +23,7 @@ public class GameController {
 
     @MessageMapping("/{roomId}/start")
     @SendTo("/topic/{roomId}")
-    public GameStartResponse startGame(
+    public WebSocketMessage startGame(
             @DestinationVariable String roomId,
             GameStartRequest request) throws RoomNotFoundException {
         return gameService.startGame(request);
@@ -31,7 +31,7 @@ public class GameController {
 
     @MessageMapping("/{roomId}/stop")
     @SendTo("/topic/{roomId}")
-    public String stopGame(@DestinationVariable String roomId) throws RoomNotFoundException {
+    public WebSocketMessage stopGame(@DestinationVariable String roomId) throws RoomNotFoundException {
         return gameService.stopGame(roomId);
     }
 }
