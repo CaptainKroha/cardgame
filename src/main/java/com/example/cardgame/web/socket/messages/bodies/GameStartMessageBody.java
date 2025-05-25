@@ -3,7 +3,6 @@ package com.example.cardgame.web.socket.messages.bodies;
 import com.example.cardgame.model.Player;
 import com.example.cardgame.model.Room;
 import com.example.cardgame.model.card.SituationCard;
-import com.example.cardgame.web.socket.messages.ResponseMessage;
 
 import java.util.List;
 

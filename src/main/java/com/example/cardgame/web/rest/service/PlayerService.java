@@ -6,6 +6,7 @@ import com.example.cardgame.web.rest.utils.PlayerSearchResult;
 import com.example.cardgame.web.socket.exception.RoomNotFoundException;
 import com.example.cardgame.web.socket.messages.WebSocketMessage;
 import com.example.cardgame.web.socket.messages.bodies.PlayerEnterMessageBody;
+import com.example.cardgame.web.socket.messages.bodies.PlayerLeftMessageBody;
 import com.example.cardgame.web.socket.service.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -53,9 +54,14 @@ public class PlayerService {
     public void dropPlayerFromRoom(String roomId, String playerId) throws RoomNotFoundException {
         Room room = roomService.getRoomById(roomId)
                 .orElseThrow(RoomNotFoundException::new);
-        room.getPlayers().removeIf(player -> player.getPlayerId().equals(playerId));
+        Player player = room.findPlayerById(playerId)
+                .orElseThrow(IllegalAccessError::new);
+        room.getPlayers().remove(player);
 
         roomService.saveRoom(room);
+
+        PlayerLeftMessageBody messageBody = new PlayerLeftMessageBody(room.getPlayers().size(), player.getLogin());
+        notificationService.notifyPlayers(roomId, WebSocketMessage.playerLeft(messageBody));
 
     }
 }

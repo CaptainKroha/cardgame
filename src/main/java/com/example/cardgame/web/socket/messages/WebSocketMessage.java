@@ -4,6 +4,7 @@ package com.example.cardgame.web.socket.messages;
 import com.example.cardgame.web.socket.messages.bodies.GameStartMessageBody;
 import com.example.cardgame.web.socket.messages.bodies.MessageBody;
 import com.example.cardgame.web.socket.messages.bodies.PlayerEnterMessageBody;
+import com.example.cardgame.web.socket.messages.bodies.PlayerLeftMessageBody;
 
 public class WebSocketMessage {
     private final ResponseMessage message;
@@ -39,5 +40,9 @@ public class WebSocketMessage {
 
     public static WebSocketMessage playerEntered(PlayerEnterMessageBody body) {
         return new WebSocketMessage(ResponseMessage.PLAYER_ENTER, body);
+    }
+
+    public static WebSocketMessage playerLeft(PlayerLeftMessageBody body) {
+        return new WebSocketMessage(ResponseMessage.PLAYER_LEFT, body);
     }
 }
