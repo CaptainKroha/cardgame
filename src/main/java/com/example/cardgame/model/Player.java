@@ -21,7 +21,7 @@ public class Player {
 
     public Player(String login) {
         if(login.isBlank()){
-            this.login = String.format("Player№ %s", playerId);
+            this.login = String.format("Player№ %s", playerId.substring(0, 4));
         } else {
             this.login = login;
         }
