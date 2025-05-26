@@ -12,6 +12,16 @@ public class PlayerCardChanger implements CardChanger {
         this.room = room;
     }
 
+    public void setRoleCardFor(Player player) {
+        RoleCard newCard = getRandomCardFromList(room.getRoleCards());
+        player.setRoleCard(newCard);
+    }
+
+    public void setMoodCardFor(Player player) {
+        MoodCard newCard = getRandomCardFromList(room.getMoodCards());
+        player.setMoodCard(newCard);
+    }
+
     public void changeCurrentRoleCardFor(Player player) {
         RoleCard newCard = swapCurrentCard(room.getRoleCards(), player.getRoleCard());
         player.setRoleCard(newCard);

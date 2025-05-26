@@ -4,6 +4,7 @@ import com.example.cardgame.model.card.*;
 import com.example.cardgame.model.Player;
 import com.example.cardgame.model.Room;
 import com.example.cardgame.repository.RoomRepository;
+import com.example.cardgame.utils.PlayerCardChanger;
 import com.example.cardgame.web.socket.exception.RoomNotFoundException;
 import com.example.cardgame.web.socket.messages.WebSocketMessage;
 import com.example.cardgame.web.socket.model.GameStartRequest;
@@ -32,23 +33,19 @@ public class GameService {
         room.setGameStarted(true);
 
         if (!room.getSituationCards().isEmpty()) {
-            SituationCard situationCard = room.getSituationCards().get(0);  // Например, просто выбираем первую карту
+            SituationCard situationCard = room.getSituationCards().get(0);
             room.setSituationCard(situationCard);
         }
 
+        PlayerCardChanger playerCardChanger = new PlayerCardChanger(room);
+
         // Распределение карт ролей, настроения и активных карт для каждого игрока
         List<Player> players = room.getPlayers();
-        List<RoleCard> roleCards = new ArrayList<>(room.getRoleCards());
-        List<MoodCard> moodCards = new ArrayList<>(room.getMoodCards());
-        List<ActionCard> actionCards = new ArrayList<>(room.getActionCards());
+        List<ActionCard> actionCards = room.getActionCards();
 
         for (Player player : players) {
-            if (!roleCards.isEmpty()) {
-                player.setRoleCard(roleCards.remove(0));  // Выбираем и удаляем первую карту роли
-            }
-            if (!moodCards.isEmpty()) {
-                player.setMoodCard(moodCards.remove(0));  // Выбираем и удаляем первую карту настроения
-            }
+            playerCardChanger.setRoleCardFor(player);
+            playerCardChanger.setMoodCardFor(player);
 
             List<ActionCard> playerActionCards = new ArrayList<>();
             for (int i = 0; i < room.getCardsPerPlayer() && !actionCards.isEmpty(); i++) {
