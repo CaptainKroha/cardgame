@@ -12,11 +12,13 @@ public class PlayerCardChanger implements CardChanger {
         this.room = room;
     }
 
-    public RoleCard findNewRoleCardFor(Player player) {
-        return getDifferentCard(room.getRoleCards(), player.getRoleCard());
+    public void changeCurrentRoleCardFor(Player player) {
+        RoleCard newCard = swapCurrentCard(room.getRoleCards(), player.getRoleCard());
+        player.setRoleCard(newCard);
     }
 
-    public MoodCard findNewMoodCardFor(Player player) {
-        return getDifferentCard(room.getMoodCards(), player.getMoodCard());
+    public void changeCurrentMoodCardFor(Player player) {
+        MoodCard newCard = swapCurrentCard(room.getMoodCards(), player.getMoodCard());
+        player.setMoodCard(newCard);
     }
 }
