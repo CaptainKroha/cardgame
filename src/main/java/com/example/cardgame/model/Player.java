@@ -2,13 +2,18 @@ package com.example.cardgame.model;
 
 import com.example.cardgame.generator.UUIDGenerator;
 import com.example.cardgame.model.card.ActionCard;
-import com.example.cardgame.model.card.Card;
 import com.example.cardgame.model.card.MoodCard;
 import com.example.cardgame.model.card.RoleCard;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
+import java.util.Optional;
 
+@Setter
+@Getter
 public class Player {
+    // getters and setters
     private String playerId = UUIDGenerator.getNew();
     private String login;
     private RoleCard roleCard;
@@ -28,44 +33,9 @@ public class Player {
     }
 
 
-    // getters and setters
-    public String getPlayerId() {
-        return playerId;
-    }
-
-    public void setPlayerId(String playerId) {
-        this.playerId = playerId;
-    }
-
-    public String getLogin() {
-        return login;
-    }
-
-    public void setLogin(String login) {
-        this.login = login;
-    }
-
-    public RoleCard getRoleCard() {
-        return roleCard;
-    }
-
-    public void setRoleCard(RoleCard roleCard) {
-        this.roleCard = roleCard;
-    }
-
-    public MoodCard getMoodCard() {
-        return moodCard;
-    }
-
-    public void setMoodCard(MoodCard moodCard) {
-        this.moodCard = moodCard;
-    }
-
-    public List<ActionCard> getActionCards() {
-        return actionCards;
-    }
-
-    public void setActionCards(List<ActionCard> actionCards) {
-        this.actionCards = actionCards;
+    public Optional<ActionCard> fingActionCardById(String cardId) {
+        return actionCards.stream()
+                .filter(c -> c.getId().equals(cardId))
+                .findFirst();
     }
 }

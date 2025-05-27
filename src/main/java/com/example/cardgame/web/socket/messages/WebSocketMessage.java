@@ -1,11 +1,10 @@
 package com.example.cardgame.web.socket.messages;
 
 
-import com.example.cardgame.web.socket.messages.bodies.GameStartMessageBody;
-import com.example.cardgame.web.socket.messages.bodies.MessageBody;
-import com.example.cardgame.web.socket.messages.bodies.PlayerEnterMessageBody;
-import com.example.cardgame.web.socket.messages.bodies.PlayerLeftMessageBody;
+import com.example.cardgame.web.socket.messages.bodies.*;
+import lombok.Getter;
 
+@Getter
 public class WebSocketMessage {
     private final ResponseMessage message;
     private final MessageBody body;
@@ -22,14 +21,6 @@ public class WebSocketMessage {
         this.body = body;
     }
 
-    public ResponseMessage getMessage() {
-        return message;
-    }
-
-    public MessageBody getBody() {
-        return body;
-    }
-
     public static WebSocketMessage gameStarted(GameStartMessageBody body) {
         return new WebSocketMessage(ResponseMessage.GAME_STARTED, body);
     }
@@ -44,5 +35,13 @@ public class WebSocketMessage {
 
     public static WebSocketMessage playerLeft(PlayerLeftMessageBody body) {
         return new WebSocketMessage(ResponseMessage.PLAYER_LEFT, body);
+    }
+
+    public static WebSocketMessage situationCardChanged(SituationCardChangedMessageBody body) {
+        return new WebSocketMessage(ResponseMessage.SITUATION_CARD_CHANGED, body);
+    }
+
+    public static WebSocketMessage actionCardDropped(ActionCardDroppedMessageBody body) {
+        return new WebSocketMessage(ResponseMessage.ACTION_CARD_DROPPED, body);
     }
 }
