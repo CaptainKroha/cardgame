@@ -54,7 +54,7 @@ public class GameService {
         return WebSocketMessage.gameStarted(GameStartMessageBody.get(room));
     }
 
-    public WebSocketMessage stopGame(String roomId) throws RoomNotFoundException {
+    public WebSocketMessage stopGame(String roomId) {
         roomRepository.deleteById(roomId);
         return WebSocketMessage.gameStopped();
     }
