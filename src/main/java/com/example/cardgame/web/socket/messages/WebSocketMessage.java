@@ -44,4 +44,8 @@ public class WebSocketMessage {
     public static WebSocketMessage actionCardDropped(ActionCardDroppedMessageBody body) {
         return new WebSocketMessage(ResponseMessage.ACTION_CARD_DROPPED, body);
     }
+
+    public static WebSocketMessage deckIsOver() {
+        return new WebSocketMessage(ResponseMessage.DECK_IS_OVER);
+    }
 }

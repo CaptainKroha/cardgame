@@ -3,6 +3,7 @@ package com.example.cardgame.web.rest.service;
 import com.example.cardgame.model.Player;
 import com.example.cardgame.utils.PlayerCardChanger;
 import com.example.cardgame.utils.RoomCardChanger;
+import com.example.cardgame.web.exceptions.CardLimitReachedException;
 import com.example.cardgame.web.socket.messages.WebSocketMessage;
 import com.example.cardgame.web.socket.messages.bodies.ActionCardDroppedMessageBody;
 import com.example.cardgame.web.socket.messages.bodies.SituationCardChangedMessageBody;
@@ -76,7 +77,7 @@ public class CardService {
                                 .map(card -> {
                                     synchronized (room){
                                         player.getActionCards().remove(card);
-                                        room.getDroppedActionCards().addLast(card);
+                                        room.getDroppedActionCards().add(card);
                                         roomService.saveRoom(room);
 
                                         ActionCardDroppedMessageBody messageBody =
@@ -91,5 +92,32 @@ public class CardService {
                         )
                 )
                 .orElse(false);
+    }
+
+    public Optional<Player> getActionCard(String roomId, String playerId) throws CardLimitReachedException {
+        return roomService.getRoomById(roomId)
+                .flatMap(room -> room.findPlayerById(playerId)
+                        .map(player -> {
+                            synchronized (room) {
+                                if(player.getActionCards().size() >= room.getCardsPerPlayer()) {
+                                    throw new CardLimitReachedException(
+                                            "Player " + playerId + " already has maximum cards (" +
+                                                    room.getCardsPerPlayer() + ")"
+                                    );
+                                }
+                                PlayerCardChanger changer = new PlayerCardChanger(room);
+                                changer.getActionCardFor(player);
+                                roomService.saveRoom(room);
+
+                                if(room.getActionCards().isEmpty()) {
+                                    notificationService.notifyPlayers(
+                                            roomId,
+                                            WebSocketMessage.deckIsOver()
+                                    );
+                                }
+                                return player;
+                            }
+                        })
+                );
     }
 }

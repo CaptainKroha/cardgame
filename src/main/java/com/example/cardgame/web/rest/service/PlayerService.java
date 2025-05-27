@@ -55,7 +55,7 @@ public class PlayerService {
         Room room = roomService.getRoomById(roomId)
                 .orElseThrow(RoomNotFoundException::new);
         Player player = room.findPlayerById(playerId)
-                .orElseThrow(IllegalAccessError::new);
+                .orElseThrow(IllegalArgumentException::new);
         room.getPlayers().remove(player);
 
         roomService.saveRoom(room);

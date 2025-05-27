@@ -1,13 +1,11 @@
 package com.example.cardgame.web.rest.controller;
 
 import com.example.cardgame.model.Player;
+import com.example.cardgame.web.exceptions.CardLimitReachedException;
 import com.example.cardgame.web.rest.service.CardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/rooms/{roomId}")
@@ -16,7 +14,7 @@ public class CardController {
     @Autowired
     private CardService cardService;
 
-    @PostMapping("/players/{playerId}/cards")
+    @PostMapping("/players/{playerId}/cards/role/change")
     public ResponseEntity<Player> changeRoleCard(
             @PathVariable String roomId,
             @PathVariable String playerId) {
@@ -50,6 +48,19 @@ public class CardController {
         return cardService.dropActionCard(roomId, playerId, cardId)
                 ? ResponseEntity.ok().build()
                 : ResponseEntity.notFound().build();
+    }
+
+    @PostMapping("/players/{playerId}/cards/action/draw")
+    public ResponseEntity<?> drawActionCard(
+            @PathVariable String roomId,
+            @PathVariable String playerId) {
+        try {
+            return cardService.getActionCard(roomId, playerId)
+                    .map(ResponseEntity::ok)
+                    .orElse(ResponseEntity.notFound().build());
+        } catch (CardLimitReachedException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
 }
