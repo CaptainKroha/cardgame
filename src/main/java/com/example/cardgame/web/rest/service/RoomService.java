@@ -1,7 +1,12 @@
 package com.example.cardgame.web.rest.service;
 
-import com.example.cardgame.model.*;
-import com.example.cardgame.model.card.*;
+import com.example.cardgame.model.CreateRoomRequest;
+import com.example.cardgame.model.Player;
+import com.example.cardgame.model.Room;
+import com.example.cardgame.model.card.ActionCard;
+import com.example.cardgame.model.card.MoodCard;
+import com.example.cardgame.model.card.RoleCard;
+import com.example.cardgame.model.card.SituationCard;
 import com.example.cardgame.repository.RoomRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
