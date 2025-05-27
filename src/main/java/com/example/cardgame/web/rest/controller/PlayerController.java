@@ -3,12 +3,10 @@ package com.example.cardgame.web.rest.controller;
 import com.example.cardgame.model.Player;
 import com.example.cardgame.web.rest.service.PlayerService;
 import com.example.cardgame.web.rest.utils.PlayerSearchResult;
-import com.example.cardgame.web.socket.exception.RoomNotFoundException;
+import com.example.cardgame.web.socket.exceptions.RoomNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/rooms/{roomId}/players")

@@ -2,8 +2,11 @@ package com.example.cardgame.utils;
 
 import com.example.cardgame.model.Player;
 import com.example.cardgame.model.Room;
+import com.example.cardgame.model.card.ActionCard;
 import com.example.cardgame.model.card.MoodCard;
 import com.example.cardgame.model.card.RoleCard;
+
+import java.util.List;
 
 public class PlayerCardChanger implements CardChanger {
     private final Room room;
@@ -20,6 +23,11 @@ public class PlayerCardChanger implements CardChanger {
     public void setMoodCardFor(Player player) {
         MoodCard newCard = getRandomCardFromList(room.getMoodCards());
         player.setMoodCard(newCard);
+    }
+
+    public void setActionCardsFor(Player player) {
+        List<ActionCard> actionCards = getRandomCardsSetFromList(room.getActionCards(), room.getCardsPerPlayer());
+        player.setActionCards(actionCards);
     }
 
     public void changeCurrentRoleCardFor(Player player) {

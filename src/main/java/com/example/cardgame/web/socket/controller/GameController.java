@@ -1,6 +1,7 @@
 package com.example.cardgame.web.socket.controller;
 
-import com.example.cardgame.web.socket.exception.RoomNotFoundException;
+import com.example.cardgame.web.socket.exceptions.NotEnoughCardsException;
+import com.example.cardgame.web.socket.exceptions.RoomNotFoundException;
 import com.example.cardgame.web.socket.messages.WebSocketMessage;
 import com.example.cardgame.web.socket.model.GameStartRequest;
 import com.example.cardgame.web.socket.service.GameService;
@@ -25,7 +26,7 @@ public class GameController {
     @SendTo("/topic/{roomId}")
     public WebSocketMessage startGame(
             @DestinationVariable String roomId,
-            GameStartRequest request) throws RoomNotFoundException {
+            GameStartRequest request) throws RoomNotFoundException, NotEnoughCardsException {
         return gameService.startGame(request);
     }
 

@@ -1,4 +1,4 @@
-package com.example.cardgame.web.socket.exception;
+package com.example.cardgame.web.socket.exceptions;
 
 public class RoomNotFoundException extends Exception {
     public RoomNotFoundException() {

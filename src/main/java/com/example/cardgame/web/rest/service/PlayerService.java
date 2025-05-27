@@ -3,7 +3,7 @@ package com.example.cardgame.web.rest.service;
 import com.example.cardgame.model.Player;
 import com.example.cardgame.model.Room;
 import com.example.cardgame.web.rest.utils.PlayerSearchResult;
-import com.example.cardgame.web.socket.exception.RoomNotFoundException;
+import com.example.cardgame.web.socket.exceptions.RoomNotFoundException;
 import com.example.cardgame.web.socket.messages.WebSocketMessage;
 import com.example.cardgame.web.socket.messages.bodies.PlayerEnterMessageBody;
 import com.example.cardgame.web.socket.messages.bodies.PlayerLeftMessageBody;
