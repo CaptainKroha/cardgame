@@ -14,7 +14,7 @@ SITUATION_CARD_CHANGED
 ACTION_CARD_DROPPED     
 DECK_IS_OVER     
 PLAYER_LEFT     
-PLAYER_ENTER
+PLAYER_ENTER    
 DROPPED_CARDS_RETURNED
 
 ## Модели, возвращаемые сервером
@@ -171,7 +171,7 @@ Player
 SEND /room/{roomId}/start
 ``` json
 {
-    "roomId": roomID
+    "roomId": "roomID"
 }
 ```
 
