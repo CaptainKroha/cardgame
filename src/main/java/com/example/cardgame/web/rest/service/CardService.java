@@ -11,6 +11,7 @@ import com.example.cardgame.web.socket.service.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -119,5 +120,24 @@ public class CardService {
                             }
                         })
                 );
+    }
+
+    public Boolean returnDroppedActionCards(String roomId) {
+        return roomService.getRoomById(roomId)
+                .map(room -> {
+                    synchronized (room) {
+                        if(room.getDroppedActionCards().isEmpty())
+                            return true;
+                        room.getActionCards().addAll(room.getDroppedActionCards());
+                        room.setDroppedActionCards(List.of());
+                        roomService.saveRoom(room);
+                        notificationService.notifyPlayers(
+                                roomId,
+                                WebSocketMessage.droppedCardsReturned()
+                        );
+                        return true;
+                    }
+                })
+                .orElse(false);
     }
 }

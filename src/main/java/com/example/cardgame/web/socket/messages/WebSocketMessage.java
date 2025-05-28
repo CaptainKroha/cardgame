@@ -48,4 +48,8 @@ public class WebSocketMessage {
     public static WebSocketMessage deckIsOver() {
         return new WebSocketMessage(ResponseMessage.DECK_IS_OVER);
     }
+
+    public static WebSocketMessage droppedCardsReturned() {
+        return new WebSocketMessage(ResponseMessage.DROPPED_CARDS_RETURNED);
+    }
 }

@@ -63,4 +63,12 @@ public class CardController {
         }
     }
 
+    @PostMapping("/cards/return-dropped")
+    public ResponseEntity<Void> returnDroppedActionCards(
+            @PathVariable String roomId) {
+        return cardService.returnDroppedActionCards(roomId)
+                ? ResponseEntity.ok().build()
+                : ResponseEntity.notFound().build();
+    }
+
 }

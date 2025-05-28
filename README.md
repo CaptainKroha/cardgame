@@ -1,6 +1,6 @@
 # Описание WEB API
 
-Используются как HTTP-запросы, так и WebSocket URL: root_url/ws
+Используются как Http-запросы, так и WebSocket URL: root_url/ws
 
 {param_name}  в запросе - параметр
 
@@ -15,6 +15,7 @@ ACTION_CARD_DROPPED
 DECK_IS_OVER     
 PLAYER_LEFT     
 PLAYER_ENTER
+DROPPED_CARDS_RETURNED
 
 ## Модели, возвращаемые сервером
 
@@ -46,40 +47,41 @@ String content
 
 ## Проверка подключения
 
-#HTTP
-GET /ping
+#Http
+`GET /ping`
 
 #Response
 pong
+
 ## Комната
 
 ### Добавление
 
-#HTTP
-POST /rooms
-``` json
+#Http
+`POST /rooms`
+```json
 {
-    "creatorLogin": "Petya",
-    "cardsPerPlayer": 1,
-    "situationCards": [
-        "Situation card 1",
-        "Situation card 2"
-    ],
-    "roleCards": [
-        "Role Card 1",
-        "Role Card 2",
-        "Role Card 3"
-    ],
-    "moodCards": [
-        "Mood Card 1",
-        "Mood Card 2",
-        "Mood Card 3"
-    ],
-    "actionCards": [
-        "Action Card 1",
-        "Action Card 2",
-        "Action Card 3"
-    ]
+  "creatorLogin": "Petya",
+  "cardsPerPlayer": 1,
+  "situationCards": [
+    "Situation card 1", 
+    "Situation card 2"
+  ],
+  "roleCards": [
+    "Role Card 1",
+    "Role Card 2",
+    "Role Card 3"
+  ],
+  "moodCards": [
+    "Mood Card 1",
+    "Mood Card 2",
+    "Mood Card 3"
+  ],
+  "actionCards": [
+    "Action Card 1",
+    "Action Card 2",
+    "Action Card 3"
+  ]
 }
 ```
 
@@ -88,8 +90,8 @@ roomID
 
 ### Получение
 
-#HTTP
-GET /rooms/roomID
+#Http
+`GET /rooms/roomID`
 
 #Response
 Room
@@ -101,12 +103,12 @@ Room
 Подключение игрока возможно только до ее начала. Для подключения к игре необходимо установить WebSocket соединение, после чего подписаться на следующий топик.
 
 #WebSocket
-SUBSCRIBE /topic/{roomID}
+`SUBSCRIBE /topic/{roomID}`
 
 После подключения по WebSocket необходимо выполнить запрос на добавления игрока.
 
-#HTTP
-POST /rooms/{roomId}/players
+#Http
+`POST /rooms/{roomId}/players`
 `Login`
 
 #Response
@@ -115,7 +117,7 @@ Player
 После добавления игрока все подписанные на топик получать следующее сообщение:
 
 #WebSocketMessage   
-```JSON
+```json
 {   
     "message":  "PLAYER_ENTER",   
     "body": {   
@@ -126,7 +128,7 @@ Player
 ```
 ### Получение
 
-#HTTP
+#Http
 `GET /rooms/{roomId}/players/{playerId}`
 
 #Response
@@ -139,13 +141,13 @@ Player
 ### Удаление
 
 Для выхода из игры необходимо разорвать WebSocket  соединение. После выполнить следующий запрос:
-#HTTP
+#Http
 `DELETE /rooms/{roomId}/players/{playerId}`
 
 Все подписанные на топик пользователи получат сообщение:
 
 #WebSocketMessage
-```JSON
+```json
 {
     "message": "PLAYER_LEFT",
     "body": {
@@ -156,7 +158,7 @@ Player
 ```
 ## Смена карты роли/настроения
 
-#HTTP   
+#Http   
 `GET /rooms/{roomId}/players/{playerId}/cards/role/change`  
 `GET /rooms/{roomId}/players/{playerId}/cards/mood/change`
 
@@ -167,14 +169,14 @@ Player
 
 #WebSocket
 SEND /room/{roomId}/start
-``` JSON
+``` json
 {
     "roomId": roomID
 }
 ```
 
 #WebSocketMessage
-```JSON
+```json
 {
     "message": "GAME_STARTED",
     "situationCard": {
@@ -193,7 +195,7 @@ SEND /room/{roomId}/start
 `SEND /room/{roomId}/stop`
 
 #WebSocketMessage
-```JSON
+```json
 {
     "message":"GAME_STOPPED",
     "body": null
@@ -201,14 +203,14 @@ SEND /room/{roomId}/start
 ```
 
 ### Смена карты ситуации
-#HTTP
+#Http
 `POST /room/{roomId}/cards/situation/change`
 
 #Response
 True/False
 
 #WebSocketMessage
-```JSON
+```json
 {
   "message": "SITUATION_CARD_CHANGED",
   "body": {
@@ -221,14 +223,14 @@ True/False
 ```
 
 ### Сброс активной карты
-#HTTP
+#Http
 `POST /rooms/{roomId}/players/{playerId}/cards/action/drop/{cardId}`
 
 #Response
 True/False
 
 #WebSocketMessage
-```JSON
+```json
 {
   "message": "ACTION_CARD_DROPPED",
   "body": {
@@ -241,7 +243,7 @@ True/False
 ```
 
 ### Взятие активной карты
-#HTTP
+#Http
 `POST /rooms/{roomId}/players/{playerId}/cards/action/draw`
 
 #Response
@@ -249,16 +251,27 @@ Player
 
 В случае, если после взятия карты из колоды она кончится, то всем игрокам будет отправлено оповещение
 #WebSocketMessage
-```JSON
+```json
 {
   "message": "DECK_IS_OVER",
   "body": null
 }
 ```
 
-Выход игрока!
-Перемешать колоду
+### Перемешать колоду
+#Http
+`POST /rooms/{roomId}/cards/return-dropped`
 
+#Response
+True/False
+
+#WebSocketMessage
+```json
+{
+  "message": "DROPPED_CARDS_RETURNED",
+  "body": null
+}
+```
 
 
 

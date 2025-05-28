@@ -7,5 +7,6 @@ public enum ResponseMessage {
     ACTION_CARD_DROPPED,
     DECK_IS_OVER,
     PLAYER_LEFT,
-    PLAYER_ENTER
+    PLAYER_ENTER,
+    DROPPED_CARDS_RETURNED
 }
