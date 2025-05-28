@@ -1,182 +1,171 @@
 # Описание WEB API
 
-## HTTP-запросы (запрос - ответ)
+Используются как HTTP-запросы, так и WebSocket URL: root_url/ws
 
-{id}  в запросе - параметр
-### Проверка подключения
+{param_name}  в запросе - параметр
 
+> Используется SockJS и STOMP поверх WebSocket
+
+## Типы сообщений, отправляемые сервером в той или иной ситуации
+
+GAME_STARTED     
+GAME_STOPPED    
+SITUATION_CARD_CHANGED  
+ACTION_CARD_DROPPED     
+DECK_IS_OVER     
+PLAYER_LEFT     
+PLAYER_ENTER
+
+## Модели, возвращаемые сервером
+
+Room:
+String roomId,  
+String creatorId,   
+Integer cardsPerPlayer,     
+Card situationCard,     
+Player[] players,      
+Card[] situationCards,  
+Card[] roleCards,   
+Card[] moodCards,   
+Card[] actionCards,     
+Card[] droppedActionCards,  
+Date createdAt,     
+Boolean isGameStarted   
+
+Player:
+String playerId,    
+String login,   
+Card roleCard,  
+Card moodCard,  
+Card[] actionCards
+
+Card:   
+String id,  
+String content
+
+
+## Проверка подключения
+
+#HTTP
 GET /ping
 
 #Response
 pong
-### Комната
+## Комната
 
-#### Добавление
+### Добавление
 
+#HTTP
 POST /rooms
 ``` json
 {
-    "creatorLogin": "Petya",
-    "cardsPerPlayer": 1,
-    "situationCards": [
-        "Situation card 1",
-        "Situation card 2"
-    ],
-    "roleCards": [
-        "Role Card 1",
-        "Role Card 2",
-        "Role Card 3"
-    ],
-    "moodCards": [
-        "Mood Card 1",
-        "Mood Card 2",
-        "Mood Card 3"
-    ],
-    "actionCards": [
-        "Action Card 1",
-        "Action Card 2",
-        "Action Card 3"
-    ]
+    "creatorLogin": "Petya",
+    "cardsPerPlayer": 1,
+    "situationCards": [
+        "Situation card 1",
+        "Situation card 2"
+    ],
+    "roleCards": [
+        "Role Card 1",
+        "Role Card 2",
+        "Role Card 3"
+    ],
+    "moodCards": [
+        "Mood Card 1",
+        "Mood Card 2",
+        "Mood Card 3"
+    ],
+    "actionCards": [
+        "Action Card 1",
+        "Action Card 2",
+        "Action Card 3"
+    ]
 }
 ```
 
 #Response
 roomID
 
-#### Получение
+### Получение
 
+#HTTP
 GET /rooms/roomID
 
 #Response
 Room
 
-#### Удаление
+## Игрок
 
-DELETE /rooms/roomID
+### Добавление
 
-### Игрок
+Подключение игрока возможно только до ее начала. Для подключения к игре необходимо установить WebSocket соединение, после чего подписаться на следующий топик.
 
-#### Добавление
+#WebSocket
+SUBSCRIBE /topic/{roomID}
 
+После подключения по WebSocket необходимо выполнить запрос на добавления игрока.
+
+#HTTP
 POST /rooms/{roomId}/players
 `Login`
 
 #Response
 Player
-#### Получение
 
-GET /rooms/{roomId}/players/{playerId}
+После добавления игрока все подписанные на топик получать следующее сообщение:
 
-#Response
-Player
-#### Удаление
-
-DELETE /rooms/{roomId}/players/{playerId}
-
-### Смена карты роли/настроения
-
-GET /rooms/{roomId}/players/{playerId}/cards/role/change
-
-GET /rooms/{roomId}/players/{playerId}/cards/mood/change
-
-#Response
-Player
-## WebSocket (запрос - оповещение)
-
-> Используется SockJS и STOMP поверх WebSocket
-
-### Строковые константы, отправляемые сервером в той или иной ситуации
-
-GAME_STARTED = "Game started"
-GAME_STOPPED = "Game stopped"  
-SITUATION_CARD_CHANGED = "Situation card changed"
-ACTION_CARD_DROPPED = "Action card dropped"  
-DECK_IS_OVER = "Deck is over"  
-PLAYER_LEFT = "Player left"  
-PLAYER_ENTER = "Player enter"
-
-### Пример с подключением и стартом игры
-
-``` HTML
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WebSocket Test</title>
-</head>
-<body>
-    <h1>WebSocket STOMP Test</h1>
-    <div>
-        <input id="roomIdInput" type="text">
-    </div>
-    <div>
-        <button id="connect">Connect</button>
-        <button id="disconnect" disabled>Disconnect</button>
-    </div>
-    <div>
-        <button id="sendMessage">Start game</button>
-    </div>
-    <div>
-        <h2>Received Messages</h2>
-        <ul id="messages"></ul>
-    </div>
-    <script src="https://cdn.jsdelivr.net/npm/sockjs-client/dist/sockjs.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/stompjs/lib/stomp.min.js"></script>
-    <script>
-        let stompClient = null;
-
-        function setConnected(connected) {
-            document.getElementById("connect").disabled = connected;
-            document.getElementById("disconnect").disabled = !connected;
-            document.getElementById("sendMessage").disabled = !connected;
-        }
-
-        function connect() {
-            const socket = new SockJS('http://localhost:8080/ws');
-            stompClient = Stomp.over(socket);
-            stompClient.connect({}, () => {
-                setConnected(true);
-                console.log("Connected to WebSocket");
-
-                // Подписываемся на топик
-                const roomId = document.getElementById("roomIdInput").value;
-                stompClient.subscribe('/topic/' + roomId, (message) => {
-                    const li = document.createElement("li");
-                    li.textContent = "Received: " + message.body;
-                    document.getElementById("messages").appendChild(li);
-                });
-            });
-        }
-
-        function disconnect() {
-            if (stompClient !== null) {
-                stompClient.disconnect(() => {
-                    console.log("Disconnected");
-                    setConnected(false);
-                });
-            }
-        }
-
-        function sendMessage() {
-            const roomId = document.getElementById("roomIdInput").value;
-            stompClient.send('/room/' + roomId + '/start', {}, '{"roomId": '+ roomId +'}');
-        }
-
-        document.getElementById("connect").addEventListener("click", connect);
-        document.getElementById("disconnect").addEventListener("click", disconnect);
-        document.getElementById("sendMessage").addEventListener("click", sendMessage);
-    </script>
-</body>
-</html>
-
+#WebSocketMessage   
+```JSON
+{   
+    "message":  "PLAYER_ENTER",   
+    "body": {   
+        "playersCount": 5,     
+        "playerLogin": "login"   
+    }   
+}
 ```
-### Подключение
-/ws
+### Получение
 
-SUBSCRIBE /topic/{roomID}
+#HTTP
+`GET /rooms/{roomId}/players/{playerId}`
+
+#Response
+```
+{
+    "status": "ROOM_NOT_FOUND"|"PLAYER_NOT_FOUND"|"SUCCESS",
+    "player": Player
+}
+```
+### Удаление
+
+Для выхода из игры необходимо разорвать WebSocket  соединение. После выполнить следующий запрос:
+#HTTP
+`DELETE /rooms/{roomId}/players/{playerId}`
+
+Все подписанные на топик пользователи получат сообщение:
+
+#WebSocketMessage
+```JSON
+{
+    "message": "PLAYER_LEFT",
+    "body": {
+        "playersCount": 5,
+        "playerLogin": "login"
+    }
+}
+```
+## Смена карты роли/настроения
+
+#HTTP   
+`GET /rooms/{roomId}/players/{playerId}/cards/role/change`  
+`GET /rooms/{roomId}/players/{playerId}/cards/mood/change`
+
+#Response   
+Player
+
 ### Старт игры
 
+#WebSocket
 SEND /room/{roomId}/start
 ``` JSON
 {
@@ -184,24 +173,91 @@ SEND /room/{roomId}/start
 }
 ```
 
-#Response
+#WebSocketMessage
+```JSON
 {
-"message": GAME_STARTED,
-"situationCard": SituationCard
-"players": List(Players)
+    "message": "GAME_STARTED",
+    "situationCard": {
+      "id": "card_id",
+      "content": "card_content"
+    },
+    "players": [
+      "Player",
+      "Player"
+    ]
 }
+```
 ### Завершение игры
 
-SEND /room/{roomId}/stop
+#WebSocket
+`SEND /room/{roomId}/stop`
+
+#WebSocketMessage
+```JSON
+{
+    "message":"GAME_STOPPED",
+    "body": null
+}
+```
+
+### Смена карты ситуации
+#HTTP
+`POST /room/{roomId}/cards/situation/change`
 
 #Response
-GAME_STOPPED
+True/False
+
+#WebSocketMessage
+```JSON
+{
+  "message": "SITUATION_CARD_CHANGED",
+  "body": {
+      "newCard": {
+        "id": "id",
+        "content": "content"
+      }
+  }
+}
+```
+
+### Сброс активной карты
+#HTTP
+`POST /rooms/{roomId}/players/{playerId}/cards/action/drop/{cardId}`
+
+#Response
+True/False
+
+#WebSocketMessage
+```JSON
+{
+  "message": "ACTION_CARD_DROPPED",
+  "body": {
+    "droppedCard": {
+      "id": "id",
+      "content": "content"
+    }
+  }
+}
+```
+
+### Взятие активной карты
+#HTTP
+`POST /rooms/{roomId}/players/{playerId}/cards/action/draw`
+
+#Response
+Player
+
+В случае, если после взятия карты из колоды она кончится, то всем игрокам будет отправлено оповещение
+#WebSocketMessage
+```JSON
+{
+  "message": "DECK_IS_OVER",
+  "body": null
+}
+```
 
 Выход игрока!
-Смена карты ситуации!
-Сброс активной карты!
-Взятие активной карты+
-Перемешать колоду!
+Перемешать колоду
 
 
 

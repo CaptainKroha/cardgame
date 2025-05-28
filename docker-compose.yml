@@ -8,11 +8,13 @@ services:
       - mongo-data:/data/db
 
   app:
+    build: .
     image: captainkroha/cardgame-app
+    container_name: cardgame-app
     depends_on:
       - mongo
     ports:
-      - "8000:8090"
+      - "8080:8080"
     environment:
       - SPRING_DATA_MONGODB_URI=mongodb://mongo:27017/cardgame
 
