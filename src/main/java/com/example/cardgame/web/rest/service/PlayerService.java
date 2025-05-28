@@ -58,10 +58,20 @@ public class PlayerService {
                 .orElseThrow(IllegalArgumentException::new);
         room.getPlayers().remove(player);
 
+        if(room.getIsGameStarted()) {
+            returnPlayersCardsToDeck(room, player);
+        }
+
         roomService.saveRoom(room);
 
         PlayerLeftMessageBody messageBody = new PlayerLeftMessageBody(room.getPlayers().size(), player.getLogin());
         notificationService.notifyPlayers(roomId, WebSocketMessage.playerLeft(messageBody));
 
+    }
+
+    public void returnPlayersCardsToDeck(Room room, Player player) {
+        room.getRoleCards().add(player.getRoleCard());
+        room.getMoodCards().add(player.getMoodCard());
+        room.getDroppedActionCards().addAll(player.getActionCards());
     }
 }
